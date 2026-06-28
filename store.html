@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>THANATHON — Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Chakra+Petch:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: linear-gradient(145deg, #131410, #0E0F0B, #0B0C09);
+      color: #F2EFE9;
+      font-family: "Chakra Petch", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: 0.01em;
+      min-height: 100vh;
+    }
+    body { overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      background: linear-gradient(145deg, #131410, #0E0F0B, #0B0C09);
+      border-bottom: 1px solid rgba(242, 239, 233, 0.08);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      color: #fff; font-size: 14px; letter-spacing: 0.18em;
+      text-transform: uppercase; font-weight: 700;
+    }
+    .nav-back {
+      padding: 6px 14px; border: 1px solid #333; color: #fff;
+      font-family: "Chakra Petch", sans-serif; font-size: 13px;
+      letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;
+      background: none; transition: border-color 0.15s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .nav-back:hover { border-color: #666; }
+
+    /* ── FORMS ── */
+    .form { display: grid; gap: 14px; }
+    .form .field { display: grid; gap: 6px; }
+    .form label {
+      font-family: "Share Tech Mono", monospace;
+      font-size: 11px; color: #555;
+      letter-spacing: 0.16em; text-transform: uppercase;
+    }
+    .form input, .form select, .form textarea {
+      background: #0a0a0a; color: #e0e0e0;
+      border: 1px solid #2a2a2a;
+      padding: 12px 14px; font-size: 14px;
+      font-family: inherit; outline: none;
+      transition: border-color 160ms ease;
+    }
+    .form input:focus, .form select:focus, .form textarea:focus { border-color: #a8a297; }
+    .form select option { background: #111; }
+
+    /* ── SCREENS ── */
+    .screen {
+      display: none;
+      min-height: calc(100vh - 60px);
+    }
+    .screen.active { display: block; }
+
+    /* ── LOGIN SCREEN ── */
+    .login-wrap {
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 60px); padding: 40px 20px;
+    }
+    .login-card {
+      background: #0f0f0f; border: 1px solid #2a2a2a;
+      padding: 40px 36px; width: 100%; max-width: 420;
+      position: relative;
+    }
+    .corner { position: absolute; width: 14px; height: 14px; }
+    .corner.tl { top: 10px; left: 10px; border-top: 1px solid #444; border-left: 1px solid #444; }
+    .corner.tr { top: 10px; right: 10px; border-top: 1px solid #444; border-right: 1px solid #444; }
+    .corner.bl { bottom: 10px; left: 10px; border-bottom: 1px solid #444; border-left: 1px solid #444; }
+    .corner.br { bottom: 10px; right: 10px; border-bottom: 1px solid #444; border-right: 1px solid #444; }
+
+    .card-label {
+      font-family: "Share Tech Mono", monospace; font-size: 10px;
+      letter-spacing: 0.22em; color: #444; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .brand-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+    }
+    .brand-name {
+      font-size: 16px; font-weight: 700; letter-spacing: 0.18em;
+      color: #fff; text-transform: uppercase;
+    }
+    .card-sub {
+      font-family: "Share Tech Mono", monospace; font-size: 10px;
+      color: #444; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 28px;
+    }
+
+    .btn-primary {
+      width: 100%; padding: 13px 20px;
+      background: #f0f0f0; color: #0a0a0a; border: none;
+      font-family: "Chakra Petch", sans-serif; font-size: 13px;
+      letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700;
+      cursor: pointer; transition: background 0.16s; margin-top: 8px;
+    }
+    .btn-primary:hover { background: #a8a297; }
+    .btn-primary:disabled { background: #1a1a1a; color: #444; cursor: default; }
+
+    .btn-ghost {
+      padding: 13px 16px; background: none; border: 1px solid #2a2a2a; color: #666;
+      font-family: "Chakra Petch", sans-serif; font-size: 12px;
+      letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .btn-ghost:hover { border-color: #555; color: #aaa; }
+
+    .error-box {
+      font-family: "Share Tech Mono", monospace; font-size: 11px;
+      color: #c0501e; letter-spacing: 0.1em;
+      border: 1px solid rgba(192,80,30,0.3); padding: 10px 14px;
+    }
+
+    /* ── MFA SCREEN ── */
+    .mfa-wrap {
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 60px); padding: 40px 20px;
+    }
+    .mfa-card {
+      background: #0f0f0f; border: 1px solid #2a2a2a;
+      padding: 40px 36px; width: 100%; max-width: 460;
+      position: relative;
+    }
+    .stage-bar {
+      display: flex; border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a;
+      padding: 14px 0; margin-bottom: 32px;
+    }
+    .stage-item {
+      flex: 1; text-align: center;
+      border-right: 1px solid #1a1a1a;
+    }
+    .stage-item:last-child { border-right: none; }
+    .stage-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      margin: 0 auto 8px; background: #2a2a2a;
+      border: 1px solid #2a2a2a; transition: background 0.3s, border-color 0.3s;
+    }
+    .stage-dot.active  { background: #a8a297; border-color: #a8a297; }
+    .stage-dot.done    { background: #2e6b38; border-color: #2e6b38; }
+    .stage-text {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.14em; text-transform: uppercase; color: #2a2a2a;
+      transition: color 0.3s;
+    }
+    .stage-text.active { color: #a8a297; }
+    .stage-text.done   { color: #5a8a5e; }
+
+    .mfa-title {
+      font-size: 22px; font-weight: 700; color: #F2EFE9;
+      letter-spacing: 0.04em; margin-bottom: 6px;
+    }
+    .mfa-role {
+      font-family: "Share Tech Mono", monospace; font-size: 10px;
+      color: #555; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 24px;
+    }
+    .code-input {
+      letter-spacing: 0.3em !important; font-size: 20px !important;
+      text-align: center !important;
+    }
+
+    /* ── GRANTED SCREEN ── */
+    .granted-wrap {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: calc(100vh - 60px); gap: 20px;
+      background: linear-gradient(145deg, #131410, #0E0F0B, #0B0C09);
+    }
+    .granted-label {
+      font-family: "Share Tech Mono", monospace; font-size: 10px;
+      letter-spacing: 0.28em; color: #2a2a2a; text-transform: uppercase;
+    }
+    .granted-title {
+      font-size: clamp(28px, 5vw, 56px); font-weight: 700;
+      color: #2e6b38; letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .granted-sub {
+      font-family: "Share Tech Mono", monospace; font-size: 10px;
+      letter-spacing: 0.22em; color: #2a2a2a; text-transform: uppercase;
+    }
+
+    /* ── STORE SCREEN ── */
+    .store-subheader {
+      border-bottom: 1px solid #1a1a1a; padding: 14px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .store-subheader-left {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .store-tag {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.22em; color: #444; text-transform: uppercase;
+    }
+    .store-divider { width: 1px; height: 12px; background: #2a2a2a; }
+    .store-user {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.16em; color: #555; text-transform: uppercase;
+    }
+    .store-logout {
+      background: none; border: 1px solid #2a2a2a; color: #555;
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 6px 14px; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+    }
+    .store-logout:hover { border-color: #555; color: #aaa; }
+
+    .store-hero { max-width: 1200px; margin: 0 auto; padding: 56px 32px 36px; }
+    .store-eyebrow {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.22em; color: #2a2a2a; text-transform: uppercase; margin-bottom: 14px;
+    }
+    .store-title {
+      font-size: clamp(32px, 5vw, 56px); font-weight: 700; color: #F2EFE9;
+      letter-spacing: 0.02em; text-transform: uppercase; line-height: 1;
+    }
+    .store-desc {
+      font-family: "Share Tech Mono", monospace; font-size: 11px;
+      color: #444; letter-spacing: 0.1em; margin-top: 10px; text-transform: uppercase;
+    }
+
+    .catalog { max-width: 1200px; margin: 0 auto; padding: 0 32px 80px; }
+    .catalog-divider { border-top: 1px solid #1a1a1a; margin-bottom: 32px; }
+    .catalog-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2px;
+    }
+
+    .product-card {
+      border: 1px solid #1e1e1e; background: #0c0c0c;
+      padding: 32px; display: flex; flex-direction: column; gap: 18px;
+      transition: background 0.18s, border-color 0.18s;
+    }
+    .product-card:hover { border-color: #555; background: #111; }
+
+    .product-img {
+      position: relative; aspect-ratio: 16/9;
+      background: #090909; border: 1px solid #1a1a1a; overflow: hidden;
+    }
+    .img-corner { position: absolute; width: 12px; height: 12px; }
+    .img-corner.tl { top: 8px; left: 8px; border-top: 1px solid #a8a297; border-left: 1px solid #a8a297; }
+    .img-corner.tr { top: 8px; right: 8px; border-top: 1px solid #a8a297; border-right: 1px solid #a8a297; }
+    .img-corner.bl { bottom: 8px; left: 8px; border-bottom: 1px solid #a8a297; border-left: 1px solid #a8a297; }
+    .img-corner.br { bottom: 8px; right: 8px; border-bottom: 1px solid #a8a297; border-right: 1px solid #a8a297; }
+    .img-placeholder {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    .img-label {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.18em; color: #2a2a2a; text-transform: uppercase;
+    }
+
+    .product-meta { display: flex; justify-content: space-between; align-items: flex-start; }
+    .product-num {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.14em; color: #333; text-transform: uppercase;
+    }
+    .badges { display: flex; gap: 6px; }
+    .badge {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.12em; padding: 2px 7px;
+    }
+    .badge-ok  { color: #5a8a5e; border: 1px solid #5a8a5e; }
+    .badge-dim { color: #555;    border: 1px solid #2a2a2a; }
+
+    .product-name {
+      font-size: 24px; font-weight: 700; color: #F2EFE9;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .product-cat {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.12em; color: #444; text-transform: uppercase; margin-top: 4px;
+    }
+    .product-desc { font-size: 13px; color: #888; margin-top: 10px; line-height: 1.6; }
+
+    .product-details { border-top: 1px solid #1a1a1a; padding-top: 14px; display: grid; gap: 8px; }
+    .detail-row { display: flex; justify-content: space-between; }
+    .detail-key {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.14em; color: #333; text-transform: uppercase;
+    }
+    .detail-val {
+      font-family: "Share Tech Mono", monospace; font-size: 9px; color: #666;
+    }
+
+    .btn-configure {
+      padding: 12px 20px; background: #f0f0f0; color: #0a0a0a; border: none;
+      font-family: "Chakra Petch", sans-serif; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700;
+      cursor: pointer; transition: background 0.16s; margin-top: auto;
+    }
+    .btn-configure:hover { background: #a8a297; }
+
+    .placeholder-slot {
+      border: 1px dashed #1a1a1a; padding: 28px;
+      display: flex; align-items: center; justify-content: center; min-height: 200px; opacity: 0.2;
+    }
+    .placeholder-label {
+      font-family: "Share Tech Mono", monospace; font-size: 9px;
+      letter-spacing: 0.14em; color: #2a2a2a; text-transform: uppercase;
+    }
+
+    /* ── CONFIG MODAL ── */
+    .modal-bg {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(6,6,6,0.94);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-bg.open { display: flex; }
+    .modal-card {
+      background: #0f0f0f; border: 1px solid #2a2a2a;
+      padding: 40px 36px; width: 100%; max-width: 500;
+      position: relative; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-footer { border-top: 1px solid #1a1a1a; padding-top: 16px; display: flex; gap: 10px; margin-top: 4px; }
+    .confirmed-msg { text-align: center; padding: 28px 0; }
+    .confirmed-title {
+      font-size: 18px; font-weight: 700; color: #2e6b38;
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .confirmed-sub {
+      font-family: "Share Tech Mono", monospace; font-size: 10px;
+      color: #555; letter-spacing: 0.12em; text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      .nav-inner { padding: 0 16px; }
+      .login-card, .mfa-card { padding: 28px 20px; }
+      .store-subheader, .store-hero, .catalog { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <img src="logo.png" alt="Thanaton logo" style="height:26px;width:auto;display:block;filter:drop-shadow(0.5px 0 0 #fff) drop-shadow(-0.5px 0 0 #fff) drop-shadow(0 0.5px 0 #fff) drop-shadow(0 -0.5px 0 #fff);" />
+        <span>THANATHON</span>
+      </a>
+      <a href="index.html" class="nav-back">← Back to site</a>
+    </div>
+  </nav>
+
+  <!-- SCREEN: LOGIN -->
+  <div id="screen-login" class="screen active">
+    <div class="login-wrap">
+      <div class="login-card">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+
+        <div class="card-label">// SECURE ACCESS</div>
+        <div class="brand-row">
+          <span class="brand-name">THANATHON</span>
+        </div>
+        <div class="card-sub">Restricted Store — Authorized Personnel Only</div>
+
+        <form class="form" id="login-form">
+          <div class="field">
+            <label>User ID</label>
+            <input type="text" id="login-userid" placeholder="ALPHA-001" autocomplete="off" required />
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="login-password" required />
+          </div>
+          <div id="login-error" class="error-box" style="display:none"></div>
+          <button type="submit" class="btn-primary">Authenticate →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: MFA -->
+  <div id="screen-mfa" class="screen">
+    <div class="mfa-wrap">
+      <div class="mfa-card">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+
+        <div class="card-label">// MULTI-FACTOR VERIFICATION</div>
+
+        <div class="stage-bar">
+          <div class="stage-item">
+            <div class="stage-dot" id="dot-0"></div>
+            <div class="stage-text" id="label-0">PENDING</div>
+          </div>
+          <div class="stage-item">
+            <div class="stage-dot" id="dot-1"></div>
+            <div class="stage-text" id="label-1">PENDING</div>
+          </div>
+          <div class="stage-item">
+            <div class="stage-dot" id="dot-2"></div>
+            <div class="stage-text" id="label-2">PENDING</div>
+          </div>
+        </div>
+
+        <div class="mfa-title" id="mfa-title">Authenticator 1 / 3</div>
+        <div class="mfa-role" id="mfa-role">Commander — Enter 2FA code</div>
+
+        <form class="form" id="mfa-form">
+          <div class="field">
+            <label>6-Digit Code</label>
+            <input type="text" id="mfa-code" class="code-input"
+              maxlength="6" inputmode="numeric" placeholder="——————"
+              autocomplete="one-time-code" required />
+          </div>
+          <div id="mfa-error" class="error-box" style="display:none"></div>
+          <button type="submit" class="btn-primary" id="mfa-btn">Verify Code →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: ACCESS GRANTED -->
+  <div id="screen-granted" class="screen">
+    <div class="granted-wrap">
+      <div class="granted-label">// AUTHENTICATION COMPLETE</div>
+      <div class="granted-title">ACCESS GRANTED</div>
+      <div class="granted-sub">Loading secure catalog...</div>
+    </div>
+  </div>
+
+  <!-- SCREEN: STORE -->
+  <div id="screen-store" class="screen">
+    <div class="store-subheader">
+      <div class="store-subheader-left">
+        <span class="store-tag">// SECURE STORE</span>
+        <span class="store-divider"></span>
+        <span class="store-user" id="store-userid-display"></span>
+      </div>
+      <button class="store-logout" id="btn-logout">Close session ×</button>
+    </div>
+
+    <div class="store-hero">
+      <div class="store-eyebrow">// RESTRICTED CATALOG — AUTHORIZED PERSONNEL ONLY</div>
+      <h1 class="store-title">Virtual Battleground</h1>
+      <p class="store-desc">Configure your systems for operational deployment</p>
+    </div>
+
+    <div class="catalog">
+      <div class="catalog-divider"></div>
+      <div class="catalog-grid">
+
+        <!-- MEERKATS CARD -->
+        <div class="product-card">
+          <div class="product-img">
+            <div class="img-corner tl"></div><div class="img-corner tr"></div>
+            <div class="img-corner bl"></div><div class="img-corner br"></div>
+            <div class="img-placeholder">
+              <svg width="32" height="40" viewBox="0 0 100 115" fill="none">
+                <polygon points="42,6 58,6 58,90 50,110 42,90" fill="rgba(168,162,151,0.4)"/>
+                <polygon points="42,6 4,16 14,44 42,42" fill="rgba(168,162,151,0.28)"/>
+                <polygon points="58,6 96,16 86,44 58,42" fill="rgba(168,162,151,0.28)"/>
+              </svg>
+              <span class="img-label">System Image</span>
+            </div>
+          </div>
+
+          <div class="product-meta">
+            <span class="product-num">01</span>
+            <div class="badges">
+              <span class="badge badge-ok">v1.0.0</span>
+              <span class="badge badge-dim">TRL 2</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="product-name">Meerkats</div>
+            <div class="product-cat">ISR · Counter-UAS</div>
+            <p class="product-desc">in-Battlefield Wearable counter-UAS. Empowering the performance capabilities for our heroes.</p>
+          </div>
+
+          <div class="product-details">
+            <div class="detail-row">
+              <span class="detail-key">Price</span>
+              <span class="detail-val">[ CLASSIFIED ]</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-key">SKU</span>
+              <span class="detail-val">THN-MKT-001</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-key">Availability</span>
+              <span class="detail-val">Limited — Field Trial Units</span>
+            </div>
+          </div>
+
+          <button class="btn-configure" id="btn-configure">
+            Configurar para Virtual Battleground →
+          </button>
+        </div>
+
+        <!-- PLACEHOLDER SLOTS -->
+        <div class="placeholder-slot">
+          <span class="placeholder-label">// FUTURE SYSTEM 02</span>
+        </div>
+        <div class="placeholder-slot">
+          <span class="placeholder-label">// FUTURE SYSTEM 03</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIG MODAL -->
+  <div class="modal-bg" id="modal-config">
+    <div class="modal-card">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+
+      <div class="card-label">// CONFIGURE FOR VIRTUAL BATTLEGROUND</div>
+      <div style="font-size:24px;font-weight:700;color:#e0e0e0;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:4px;">Meerkats</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#444;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:28px;">THN-MKT-001</div>
+
+      <div id="config-form-wrap">
+        <form class="form" id="config-form">
+          <div class="field">
+            <label>Configuration / Role</label>
+            <select id="config-variant">
+              <option>Standard Config</option>
+              <option>Enhanced RF Suite</option>
+              <option>Minimal Footprint</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Operational Notes</label>
+            <textarea id="config-notes" rows="3" placeholder="Specific configuration requirements..."></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn-primary" style="margin-top:0;flex:1;">A&#241;adir al Battleground &#x2192;</button>
+            <button type="button" class="btn-ghost" id="btn-config-cancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="config-confirmed" style="display:none;">
+        <div class="confirmed-msg">
+          <div class="confirmed-title">&#10003; Configuration Confirmed</div>
+          <div class="confirmed-sub">Adding to Virtual Battleground...</div>
+        </div>
+      </div>
+
+      <button id="btn-config-close" style="position:absolute;top:14px;right:14px;background:none;border:none;color:#555;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.1em;cursor:pointer;padding:4px 8px;">ESC</button>
+    </div>
+  </div>
+
+  <script>
+    // ── CREDENTIALS (simulated) ──────────────────────────────────────────────
+    var CREDS    = { userId: 'ALPHA-001', password: 'thanathon2026' };
+    var MFA      = ['123456', '654321', '111222'];
+    var ROLES    = ['Commander', 'Technical Officer', 'Security Lead'];
+
+    var mfaStage   = 0;
+    var mfaDone    = [false, false, false];
+    var authedUser = '';
+
+    // ── SCREENS ──────────────────────────────────────────────────────────────
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+      document.getElementById(id).classList.add('active');
+    }
+
+    // ── MFA STAGE UI ─────────────────────────────────────────────────────────
+    function updateMfaUI() {
+      document.getElementById('mfa-title').textContent = 'Authenticator ' + (mfaStage + 1) + ' / 3';
+      document.getElementById('mfa-role').textContent  = ROLES[mfaStage] + ' — Enter 2FA code';
+      document.getElementById('mfa-code').value = '';
+      document.getElementById('mfa-error').style.display = 'none';
+      document.getElementById('mfa-btn').disabled = false;
+      document.getElementById('mfa-btn').textContent = 'Verify Code →';
+
+      for (var i = 0; i < 3; i++) {
+        var dot   = document.getElementById('dot-' + i);
+        var label = document.getElementById('label-' + i);
+        dot.className   = 'stage-dot';
+        label.className = 'stage-text';
+        if (mfaDone[i]) {
+          dot.classList.add('done');
+          label.classList.add('done');
+          label.textContent = '✓ OK';
+        } else if (i === mfaStage) {
+          dot.classList.add('active');
+          label.classList.add('active');
+          label.textContent = 'ACTIVE';
+        } else {
+          label.textContent = 'PENDING';
+        }
+      }
+    }
+
+    // ── LOGIN ────────────────────────────────────────────────────────────────
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var uid  = document.getElementById('login-userid').value.trim();
+      var pass = document.getElementById('login-password').value;
+      var errEl = document.getElementById('login-error');
+
+      if (!uid || !pass) {
+        errEl.textContent = 'All fields are required.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (uid !== CREDS.userId || pass !== CREDS.password) {
+        errEl.textContent = 'ACCESS DENIED — Invalid credentials.';
+        errEl.style.display = 'block';
+        return;
+      }
+      authedUser = uid;
+      mfaStage = 0;
+      mfaDone  = [false, false, false];
+      updateMfaUI();
+      showScreen('screen-mfa');
+    });
+
+    // ── MFA ──────────────────────────────────────────────────────────────────
+    document.getElementById('mfa-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var code  = document.getElementById('mfa-code').value.trim();
+      var errEl = document.getElementById('mfa-error');
+
+      if (code.length !== 6) {
+        errEl.textContent = 'Enter a 6-digit code.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (code !== MFA[mfaStage]) {
+        errEl.textContent = 'INVALID CODE — Access denied.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      mfaDone[mfaStage] = true;
+      errEl.style.display = 'none';
+
+      var btn = document.getElementById('mfa-btn');
+      btn.disabled = true;
+      btn.textContent = '✓ Verified';
+      updateMfaUI(); // refresh dots
+
+      if (mfaStage === 2) {
+        setTimeout(function() {
+          showScreen('screen-granted');
+          setTimeout(function() {
+            document.getElementById('store-userid-display').textContent = authedUser;
+            showScreen('screen-store');
+          }, 2400);
+        }, 500);
+      } else {
+        setTimeout(function() {
+          mfaStage++;
+          updateMfaUI();
+        }, 500);
+      }
+    });
+
+    // Only allow digits in MFA input
+    document.getElementById('mfa-code').addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').slice(0, 6);
+    });
+
+    // ── LOGOUT ───────────────────────────────────────────────────────────────
+    document.getElementById('btn-logout').addEventListener('click', function() {
+      document.getElementById('login-userid').value = '';
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-error').style.display = 'none';
+      showScreen('screen-login');
+    });
+
+    // ── CONFIG MODAL ─────────────────────────────────────────────────────────
+    function openConfig() {
+      document.getElementById('config-form-wrap').style.display = 'block';
+      document.getElementById('config-confirmed').style.display = 'none';
+      document.getElementById('config-form').reset();
+      document.getElementById('modal-config').classList.add('open');
+    }
+    function closeConfig() {
+      document.getElementById('modal-config').classList.remove('open');
+    }
+
+    document.getElementById('btn-configure').addEventListener('click', openConfig);
+    document.getElementById('btn-config-close').addEventListener('click', closeConfig);
+    document.getElementById('btn-config-cancel').addEventListener('click', closeConfig);
+    document.getElementById('modal-config').addEventListener('click', function(e) {
+      if (e.target === this) closeConfig();
+    });
+
+    document.getElementById('config-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('config-form-wrap').style.display = 'none';
+      document.getElementById('config-confirmed').style.display = 'block';
+      setTimeout(closeConfig, 1200);
+    });
+
+    // ESC closes modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeConfig();
+    });
+  </script>
+</body>
+</html>
