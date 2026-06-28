@@ -544,7 +544,7 @@ function App() {
             <div className="container">
               <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 11, letterSpacing: '0.18em', color: 'var(--muted)', textTransform: 'uppercase', marginBottom: 24 }}>01 / Company · About Us</div>
               <p style={{ fontFamily: "'Chakra Petch', sans-serif", fontSize: 'clamp(24px, 3.5vw, 44px)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.02em', color: 'var(--fg)', marginBottom: 24 }}>
-                Expanding Defense capabilities against Asymmetric threat that challenge freedom and social mechanisms.
+                Expanding Defense capabilities against Asymmetric threats that challenge freedom and social mechanisms.
               </p>
               <p style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 'clamp(16px, 2vw, 22px)', lineHeight: 1.8, color: 'var(--muted-2)', letterSpacing: '0.04em', maxWidth: 680, marginBottom: 40 }}>
                 Actors that threaten the social, political and economic stability of our region.{' '}
